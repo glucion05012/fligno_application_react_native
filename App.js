@@ -51,10 +51,35 @@ export default class App extends Component{
                               color="blue"
                             />
                           ),
+                          headerRight: () => (
+                            <Button
+                              onPress={() => navigation.navigate("CreateRoute")}
+                              title="Create"
+                              color="green"
+                            />
+                          ),
                         }}/>
-          <Stack.Screen name="CreateRoute" component={Create} />
+        <Stack.Screen name="CreateRoute" component={Create} />
         <Stack.Screen name="EditRoute" component={Edit} />
         </Stack.Navigator>
+    )
+
+    const createAPIStack = ({ navigation }) => (
+      <Stack.Navigator>
+        <Stack.Screen name="API"
+          component={API}
+          options={{
+            headerLeft: () => (
+              <Button
+                onPress={() => navigation.openDrawer()}
+                title=" > "
+                color="blue"
+              />
+            ),
+          }}
+
+        />
+      </Stack.Navigator>
     )
 
     return(
@@ -62,7 +87,7 @@ export default class App extends Component{
         <Drawer.Navigator initialRouteName={Home}>
           <Drawer.Screen name="Home" children={createHomeStack} />
           <Drawer.Screen name="Read" children={createReadStack} />
-          <Drawer.Screen name="API" component={API} />
+          <Drawer.Screen name="API" children={createAPIStack} />
         </Drawer.Navigator>
       </NavigationContainer>
     );

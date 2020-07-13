@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { ListItem } from 'react-native-elements'
 import { View, Text, Alert, ActivityIndicator, Button } from 'react-native';
 import axios from 'axios';
 import { dbConnection } from '../../App';
 
 import { styles } from '../styles/styles.js'
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'; 
+import { FlatList, TouchableOpacity, TextInput } from 'react-native-gesture-handler'; 
 
 export default class Read extends Component {
     _isMounted = false;
@@ -20,7 +21,7 @@ export default class Read extends Component {
         this._isMounted = true;
         axios.get(dbConnection + 'read')
             .then(response => {
-                console.log(response.data);
+                
                 this.setState({
                     isLoading: false,
                     dataSource: response.data
@@ -28,45 +29,63 @@ export default class Read extends Component {
             })
     }
 
-    _renderItem = ({item, index}) =>{
-        return(
-            <TouchableOpacity onPress={() => Alert.alert(item.name, "Address: " + item.address + "\n" + "Email: " + item.email + "\n" + "Age: " + item.age)}>
-                <View style={styles.item}>
-                    <Text>{item.name} <Button
-                        onPress={() => this.props.navigation.navigate('EditRoute')}
-                        title="Edit"
-                        color="blue"
-                    /></Text>
-                    
-                </View>
-            </TouchableOpacity>
-        )
+    componentDidUpdate() {
+        this._isMounted = true;
+        axios.get(dbConnection + 'read')
+            .then(response => {
+                
+                this.setState({
+                    isLoading: false,
+                    dataSource: response.data
+                })
+            })
     }
+
+
+    renderItem = ({ item }) => (
+        <ListItem
+            title={item.name}
+            subtitle={item.email}
+            bottomDivider
+            chevron
+            onPress={() => this.props.navigation.navigate("EditRoute")}
+        />
+    )
+
 
     componentWillUnmount() {
         this._isMounted = false;
     }
     render() {
         let {dataSource, isLoading} = this.state
-        if(isLoading){
-            return(
-                <View>
-                    <ActivityIndicator size="large" animating />
+        if (dataSource.length === 0){
+            return (
+                <View style={styles.center}>
+                    <Text style={styles.title}>No Record found</Text>
                 </View>
             )
         }else{
-            return (
+            if (isLoading) {
+                return (
+                    <View>
+                        <ActivityIndicator size="large" animating />
+                    </View>
+                )
+            } else {
+                return (
 
-                <View>
-                    <Text style={styles.header}> My Profile List </Text>
-                    <FlatList
-                        data={dataSource}
-                        renderItem={this._renderItem}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
-                </View>
+                    <View>
+                        <Text style={styles.header}> My Profile List </Text>
 
-            );
+                        <FlatList
+                            data={dataSource}
+                            renderItem={this.renderItem}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                    </View>
+
+                );
+            }
         }
     }
 }
