@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button } from 'react-native';
+import { Button, View } from 'react-native';
 import Home from './src/components/home-component';
+import { Icon } from 'react-native-elements'
+import { styles } from './src/styles/styles'
 
 import Read from './src/components/read-component';
 import Create from './src/components/create-component';
@@ -16,7 +18,7 @@ const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 // set for your IP address and PORT and start "sudo php artisan serve --host=192.168.254.102 --port=80"
-export const dbConnection = "http://192.168.254.102:80/api/";
+export const dbConnection = "http://192.168.254.101:80/api/";
 
 export default class App extends Component{
   render(){
@@ -27,11 +29,7 @@ export default class App extends Component{
                       component={Home}
                       options={{
                         headerLeft: () => (
-                          <Button
-                            onPress={() => navigation.openDrawer()}
-                            title=" > "
-                            color="blue"
-                          />
+                          <Icon name="menu" size={35} onPress={() => navigation.openDrawer()} />
                         ),
                       }}
             
@@ -45,18 +43,16 @@ export default class App extends Component{
                         component={Read} 
                         options={{
                           headerLeft: () => (
-                            <Button
-                              onPress={() => navigation.openDrawer()}
-                              title=" > "
-                              color="blue"
-                            />
+                            <Icon name="menu" size={35} onPress={() => navigation.openDrawer()} />
                           ),
                           headerRight: () => (
+                            <View style={styles.Headerbutton}>
                             <Button
                               onPress={() => navigation.navigate("CreateRoute")}
                               title="Create"
                               color="green"
                             />
+                            </View>
                           ),
                         }}/>
         <Stack.Screen name="CreateRoute" component={Create} />
@@ -70,11 +66,7 @@ export default class App extends Component{
           component={API}
           options={{
             headerLeft: () => (
-              <Button
-                onPress={() => navigation.openDrawer()}
-                title=" > "
-                color="blue"
-              />
+              <Icon name="menu" size={35} onPress={() => navigation.openDrawer()} />
             ),
           }}
 

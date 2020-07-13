@@ -134,8 +134,9 @@ export default class Create extends Component {
                     maxLength={3}
                 />
                 <Text style={styles.error}>{this.state.ageError}</Text>
-
+                <View style={styles.button}>
                 <Button title="Save" onPress={() => { this.submit() }} />
+                </View>
             </View>
         );
     }

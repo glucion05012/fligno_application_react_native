@@ -48,7 +48,9 @@ export default class Read extends Component {
             subtitle={item.email}
             bottomDivider
             chevron
-            onPress={() => this.props.navigation.navigate("EditRoute")}
+            onPress={() => this.props.navigation.navigate("EditRoute", {
+                idGet: item.id,
+            })}
         />
     )
 

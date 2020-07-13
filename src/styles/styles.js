@@ -10,6 +10,12 @@ export const styles = StyleSheet.create({
         fontSize: 36,
         marginBottom: 16
     },
+    toggler:{
+        width: 35,
+        height: 5,
+        color: 'black',
+        margin: 0,
+    },
 
     // READ
     separator:{
@@ -48,8 +54,30 @@ export const styles = StyleSheet.create({
     },
     error:{
         color:'red',
-         marginLeft: 80,
+        marginLeft: 80,
         marginBottom: 30,
-    }
+    },
+    button:{
+        backgroundColor: 'blue',
+        marginTop: 10,
+        marginRight: 80,
+        marginLeft: 80,
+        borderRadius: 50,
+        overflow: 'hidden'
+    },
+    deleteBtn: {
+        backgroundColor: 'red',
+        marginTop: 10,
+        marginRight: 80,
+        marginLeft: 80,
+        borderRadius: 50,
+        overflow: 'hidden'
+    },
+    Headerbutton: {
+        marginRight: 10,
+        width:100,
+        borderRadius: 30,
+        overflow: 'hidden'
+    },
 
 });
