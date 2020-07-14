@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { ListItem } from 'react-native-elements'
 import { View, Text, Alert, ActivityIndicator, Button } from 'react-native';
 import axios from 'axios';
-import { dbConnection } from '../../App';
+//import { dbConnection } from '../../App';
+import '../../config'
 
 import { styles } from '../styles/styles.js'
 import { FlatList, TouchableOpacity, TextInput } from 'react-native-gesture-handler'; 
@@ -19,7 +20,7 @@ export default class Read extends Component {
 
     componentDidMount(){
         this._isMounted = true;
-        axios.get(dbConnection + 'read')
+        axios.get(global.dbConnection + 'read')
             .then(response => {
                 
                 this.setState({
@@ -31,7 +32,7 @@ export default class Read extends Component {
 
     componentDidUpdate() {
         this._isMounted = true;
-        axios.get(dbConnection + 'read')
+        axios.get(global.dbConnection + 'read')
             .then(response => {
                 
                 this.setState({

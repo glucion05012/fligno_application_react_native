@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import axios from 'axios';
-import { dbConnection } from '../../App';
+//import { dbConnection } from '../../App';
+import '../../config'
 
 import { styles } from '../styles/styles.js'
 import { TextInput } from 'react-native-gesture-handler';
@@ -63,7 +64,7 @@ export default class Create extends Component {
     submit(){
         const isValid = this.validate();
         if (isValid) {
-            axios.post(dbConnection + 'create', this.state)
+            axios.post(global.dbConnection + 'create', this.state)
                 .then(response => {
                     this.setState({
                         isLoading: false,

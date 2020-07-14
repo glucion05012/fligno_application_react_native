@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import axios from 'axios';
-import { dbConnection } from '../../App';
+//import { dbConnection } from '../../App';
+import '../../config'
 
 import { styles } from '../styles/styles.js'
 import { TextInput } from 'react-native-gesture-handler';
@@ -27,7 +28,7 @@ export default class Edit extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        axios.get(dbConnection + 'edit/' + this.state.idGet)
+        axios.get(global.dbConnection + 'edit/' + this.state.idGet)
             .then(response => {
                 this.setState({
                     isLoading: false,
@@ -78,7 +79,7 @@ export default class Edit extends Component {
     submit() {
         const isValid = this.validate();
         if (isValid) {
-            axios.put(dbConnection + 'update/' + this.state.idGet, this.state)
+            axios.put(global.dbConnection + 'update/' + this.state.idGet, this.state)
                 .then(response => {
                     this.setState({
                         isLoading: false,
@@ -129,7 +130,7 @@ export default class Edit extends Component {
     }
 
     deleteProfile() {
-        axios.delete(dbConnection + 'delete/' + this.state.idGet, this.state)
+        axios.delete(global.dbConnection + 'delete/' + this.state.idGet, this.state)
         Alert.alert(
             "Deleted",
             "Profile successfully deleted.",
