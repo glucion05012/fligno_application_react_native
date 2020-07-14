@@ -98,7 +98,7 @@ export default class Home extends Component {
 
     renderItem = ({ item }) => (
         <ListItem
-            leftAvatar={{ source:{uri: item.urlToImage} }}
+            leftAvatar={{ source: { uri: item.urlToImage } }}
             title={item.title}
             subtitle={item.description}
             bottomDivider
@@ -127,7 +127,7 @@ export default class Home extends Component {
                     borderWidth: 1,
                     marginVertical: 10,
                     marginHorizontal: 10,
-                    maxHeight: 200,
+                    maxHeight: Math.round(Dimensions.get('window').height),
                     flex: 1,
                     flexDirection: "column",
                 }}>
@@ -171,18 +171,13 @@ export default class Home extends Component {
                         }}>
                             <Text>Humidity: {this.state.humidity}%</Text>
                             <Text>Wind: {this.state.wind} km/h</Text>
-                            <Text style={{ fontSize: 50, marginTop: 30, }}>{this.state.temp}&#8451;</Text>
+                            <Text style={{ fontSize: 50, marginTop: 20, }}>{this.state.temp}&#8451;</Text>
                         </View>
                     </View>
                     {/* end weather */}
 
                     {/* news */}
-                    <View style={{
-                        borderBottomColor: "black",
-                        borderWidth: 1,
-                        marginTop: 150,
-                        height: Math.round(Dimensions.get('window').height)-310,
-                    }}>
+                    <View style={{ marginTop: 130,marginBottom:100}}>
                         <Text style={styles.header}> Latest News </Text>
 
                         <FlatList
@@ -192,7 +187,7 @@ export default class Home extends Component {
                         />
                     </View>
                     {/* end news */}
-
+                    
                 </View>
             );
         }
