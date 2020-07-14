@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Button, Image } from 'react-native';
+import { View, Text, ActivityIndicator, Image, Linking, Dimensions } from 'react-native';
 import axios from 'axios';
+import { ListItem } from 'react-native-elements'
 
 import { styles } from '../styles/styles.js'
+import { FlatList } from 'react-native-gesture-handler';
 
 export default class Home extends Component {
     _isMounted = false;
@@ -23,15 +25,8 @@ export default class Home extends Component {
             description: '',
 
 
-            // news
-            author: '',
-            title: '',
-            description: '',
-            url: '',
-            urlToImage: '',
-            publishedAt: '',
-            content: '',
-            news: []
+            isLoading: true,
+            dataSource: []
 
         }
     }
@@ -88,57 +83,119 @@ export default class Home extends Component {
                     });
 
                 // openweather API end
+
+
+                //news API
+                axios.get("http://newsapi.org/v2/top-headlines?country=ph&apiKey=3846b342a54142149ca91df6121d53ea")
+                    .then(response => {
+                        this.setState({
+                            isLoading: false,
+                            dataSource: response.data.articles
+                        })
+                    })
             });
     }
+
+    renderItem = ({ item }) => (
+        <ListItem
+            leftAvatar={{ source:{uri: item.urlToImage} }}
+            title={item.title}
+            subtitle={item.description}
+            bottomDivider
+            chevron
+            onPress={() => Linking.openURL(item.url)}
+        />
+    )
 
     componentWillUnmount() {
         this._isMounted = false;
     }
     render() {
-        return (
-            <View style={{
-                borderBottomColor: "black",
-                borderWidth: 1,
-                marginVertical: 10,
-                marginHorizontal: 10,
-                maxHeight:200,
-                flex: 1,
-                flexDirection: "row",
-            }}>
+        let { dataSource, isLoading } = this.state
 
-                <View style={{
-                    marginVertical: 10,
-                    marginHorizontal: 10,
-                    flex: 1,
-                    minWidth: 70,
-                }} >
-                    <Text>{this.state.city}, {this.state.region}</Text>
-                    <Text>{this.state.day}</Text>
-                    <Text>{this.state.description}</Text>
-
-                    <Image
-                        style={{
-                            width: 66,
-                            height: 58,
-                            marginTop: 10,
-                            backgroundColor: 'gray',
-                        }}
-                        source={{ uri: this.state.icon }}
-                    />
+        if (isLoading) {
+            return (
+                <View>
+                    <ActivityIndicator size="large" animating />
                 </View>
+            )
+        } else {
+            return (
 
                 <View style={{
-                    flex: 1,
+                    borderBottomColor: "black",
+                    borderWidth: 1,
                     marginVertical: 10,
                     marginHorizontal: 10,
+                    maxHeight: 200,
+                    flex: 1,
+                    flexDirection: "column",
                 }}>
-                    <Text>Humidity: {this.state.humidity}%</Text>
-                    <Text>Wind: {this.state.wind} km/h</Text>
-                    <Text style={{ fontSize: 50, marginTop: 30, }}>{this.state.temp}&#8451;</Text>
+
+                    <Text style={styles.header}> Weather Today </Text>
+
+                    {/* weather */}
+                    <View style={{
+                        marginVertical: 10,
+                        marginHorizontal: 10,
+                        maxHeight: 150,
+                        flex: 1,
+                        flexDirection: "row",
+                    }}>
+
+                        <View style={{
+                            marginVertical: 10,
+                            marginHorizontal: 10,
+                            flex: 1,
+                            minWidth: 70,
+                        }} >
+                            <Text>{this.state.city}, {this.state.region}</Text>
+                            <Text>{this.state.day}</Text>
+                            <Text>{this.state.description}</Text>
+
+                            <Image
+                                style={{
+                                    width: 66,
+                                    height: 58,
+                                    marginTop: 10,
+                                    backgroundColor: 'gray',
+                                }}
+                                source={{ uri: this.state.icon }}
+                            />
+                        </View>
+
+                        <View style={{
+                            flex: 1,
+                            marginVertical: 10,
+                            marginHorizontal: 10,
+                        }}>
+                            <Text>Humidity: {this.state.humidity}%</Text>
+                            <Text>Wind: {this.state.wind} km/h</Text>
+                            <Text style={{ fontSize: 50, marginTop: 30, }}>{this.state.temp}&#8451;</Text>
+                        </View>
+                    </View>
+                    {/* end weather */}
+
+                    {/* news */}
+                    <View style={{
+                        borderBottomColor: "black",
+                        borderWidth: 1,
+                        marginTop: 150,
+                        height: Math.round(Dimensions.get('window').height)-310,
+                    }}>
+                        <Text style={styles.header}> Latest News </Text>
+
+                        <FlatList
+                            data={dataSource}
+                            renderItem={this.renderItem}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
+                    </View>
+                    {/* end news */}
+
                 </View>
+            );
+        }
 
-
-            </View>
-        );
     }
 }
