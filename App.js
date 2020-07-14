@@ -18,7 +18,7 @@ const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 // set for your IP address and PORT and start "sudo php artisan serve --host=192.168.254.102 --port=80"
-export const dbConnection = "http://192.168.1.64:80/api/";
+export const dbConnection = "http://192.168.254.101:80/api/";
 
 export default class App extends Component{
   render(){
