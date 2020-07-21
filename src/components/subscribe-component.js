@@ -1,46 +1,51 @@
-import React, { Component } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
-import axios from 'axios';
-import '../../config'
-
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Button, Alert, Linking } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import { styles } from '../styles/styles.js'
-import { TextInput } from 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
 
-export default class subscription extends Component {
-    constructor(props) {
-        super(props);
+export default function subscribe() {
+    const [hasPermission, setHasPermission] = useState(null);
+    const [scanned, setScanned] = useState(false);
 
-        this.state = {
-            idGet: props.route.params.idGet,
-            id: '',
-            isConfirmed: '',
+    useEffect(() => {
+        (async () => {
+            const { status } = await BarCodeScanner.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
+        })();
+    }, []);
 
+    const handleBarCodeScanned = ({ type, data }) => {
+        setScanned(true);
+        //alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+        const check = data.substring(0, 4)
+        if (check === 'http') {
+            Linking.openURL(data)
+        }else{
+            alert(data);
         }
+       
+    };
+
+    if (hasPermission === null) {
+        return <Text>Requesting for camera permission</Text>;
+    }
+    if (hasPermission === false) {
+        return <Text>No access to camera</Text>;
     }
 
-    componentDidMount() {
-        axios.get(global.dbConnection + "edit/" + this.state.idGet)
-            .then(response => {
-                this.setState({
-                    id: response.data.id,
-                    isConfirmed: response.data.isConfirmed,
-                })
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+    return (
+        <View
+            style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+            }}>
+            <BarCodeScanner
+                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                style={StyleSheet.absoluteFillObject}
+            />
 
-
-    }
-
-
-    render() {
-        return(
-            <View>
-                <Text style={styles.header}> Subscription </Text>
-
-            </View>
-        )        
-    }
+            {scanned && <View style={styles.button}><Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} /></View>}
+        </View>
+    );
 }
