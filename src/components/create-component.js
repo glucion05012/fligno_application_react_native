@@ -14,22 +14,25 @@ export default class Create extends Component {
         this.state = {
             name: '',
             address: '',
-            email: '',
             age: '',
+            contact: '',
+            email: '',
 
             //validation
             nameError: '',
             addressError: '',
+            ageError: '',
+            contactError: '',
             emailError: '',
-            ageError: ''
         }
     }
 
     validate = () => {
         let nameError = '';
         let addressError = '';
-        let emailError = '';
         let ageError = '';
+        let contactError = '';
+        let emailError = '';
 
         if (this.state.name.length === 0) {
             nameError = "*Field is required..";
@@ -64,35 +67,74 @@ export default class Create extends Component {
     submit(){
         const isValid = this.validate();
         if (isValid) {
-            axios.post(global.dbConnection + 'create', this.state)
-                .then(response => {
-                    this.setState({
-                        isLoading: false,
-                        dataSource: response.data
-                    })
+
+            let emailError = '';
+            let contactError = '';
+            
+            axios.get(global.dbConnection + 'emailCheck/' + this.state.email + '/' + this.state.contact)
+                .then(response=>{
+                    if (response.data.email === this.state.email) {
+                        emailError = "*Email already taken";
+                        this.setState({ emailError });
+
+                    } else if (response.data.contact === this.state.contact) {
+                        contactError = "*Contact already taken";
+                        this.setState({ contactError });
+                        this.setState({ emailError: '' });
+                    }else{
+                        //backend connection           
+                        axios.post(global.dbConnection + 'create', this.state)
+                            .then(response => {
+                                this.setState({
+                                    isLoading: false,
+                                    dataSource: response.data
+                                })
+                            })
+
+                        // send email
+                        axios.get(global.dbConnection + 'sendEmail/' + this.state.email)
+                            .then(response => {
+                                console.log(response.data);
+
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            })
+
+                        // send sms
+                        axios.get(global.dbConnection + 'sendSMS/' + this.state.contact)
+                            .then(response => {
+                                console.log(response.data);
+
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            })
+
+                        this.setState({
+                            name: '',
+                            address: '',
+                            email: '',
+                            age: '',
+
+                            //validation
+                            nameError: '',
+                            addressError: '',
+                            emailError: '',
+                            ageError: ''
+                        })
+
+                        Alert.alert(
+                            "Success",
+                            "Please check your email or check your mobile number to validate your profile.",
+                            [
+                                { text: "OK", onPress: () => this.props.navigation.navigate("Read") }
+                            ],
+                            { cancelable: false }
+                        );
+                    }
                 })
-
-            Alert.alert(
-                "Success",
-                "Profile successfully saved.",
-                [
-                { text: "OK", onPress: () => this.props.navigation.navigate("Read") } 
-                ],
-                { cancelable: false }
-            );
-
-            this.setState({
-                name: '',
-                address: '',
-                email: '',
-                age: '',
-
-                //validation
-                nameError: '',
-                addressError: '',
-                emailError: '',
-                ageError: ''
-            })
+            
         }
     }
 
@@ -135,6 +177,17 @@ export default class Create extends Component {
                     maxLength={3}
                 />
                 <Text style={styles.error}>{this.state.ageError}</Text>
+
+                <Text style={styles.textLabel}>Contact:</Text>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={(text) => { this.setState({ contact: text }) }}
+                    value={this.state.contact}
+                    keyboardType='numeric'
+                    maxLength={11}
+                />
+                <Text style={styles.error}>{this.state.contactError}</Text>
+
                 <View style={styles.button}>
                 <Button title="Save" onPress={() => { this.submit() }} />
                 </View>

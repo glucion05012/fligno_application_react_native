@@ -15,14 +15,17 @@ export default class Edit extends Component {
             idGet: props.route.params.idGet,
             name: '',
             address: '',
-            email: '',
             age: '',
+            contact: '',
+            email: '',
+            isConfirmed: '',
 
             //validation
             nameError: '',
             addressError: '',
+            ageError: '',
+            contactError: '',
             emailError: '',
-            ageError: ''
         }
     }
 
@@ -34,8 +37,11 @@ export default class Edit extends Component {
                     isLoading: false,
                     name: response.data.name,
                     address: response.data.address,
+                    age: response.data.age,
+                    contact: response.data.contact,
                     email: response.data.email,
-                    age: response.data.age
+                    isConfirmed: response.data.isConfirmed,
+                    
                 })
             })
     }
@@ -43,8 +49,9 @@ export default class Edit extends Component {
     validate = () => {
         let nameError = '';
         let addressError = '';
-        let emailError = '';
         let ageError = '';
+        let contactError = '';
+        let emailError = '';
 
         if (this.state.name.length === 0) {
             nameError = "*Field is required..";
@@ -67,6 +74,12 @@ export default class Edit extends Component {
             ageError = "*Field is required..";
         } else if (this.state.age < 1) {
             ageError = "*Age cannot be lower than 0.";
+        }
+
+        if (this.state.contact.length === 0) {
+            contactError = "*Field is required..";
+        } else if (this.state.contact.length < 11) {
+            contactError = "*Minimum of 11 digits.";
         }
 
         if (nameError || addressError || emailError || ageError) {
@@ -99,20 +112,35 @@ export default class Edit extends Component {
             );
 
             this.setState({
+                id:'',
                 name: '',
                 address: '',
-                email: '',
                 age: '',
+                contact: '',
+                email: '',
 
                 //validation
                 nameError: '',
                 addressError: '',
+                ageError: '',
+                contactError: '',
                 emailError: '',
-                ageError: ''
             })
         }
     }
 
+    submitVerify() {
+           this.props.navigation.navigate("VerifyRoute", {
+                idGet: this.state.idGet,
+            })
+    }
+    
+
+    submitSubscribe(){
+        this.props.navigation.navigate("SubscribeRoute", {
+            idGet: this.state.idGet,
+        })
+    }
 
     delete() {
         Alert.alert(
@@ -182,15 +210,44 @@ export default class Edit extends Component {
                 />
                 <Text style={styles.error}>{this.state.ageError}</Text>
 
-                <View style={styles.button}>
-                <Button title="Update" onPress={() => { this.submit() }} />
-                </View>
+                <Text style={styles.textLabel}>Contact:</Text>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={(text) => { this.setState({ contact: text }) }}
+                    value={String(this.state.contact)}
+                    keyboardType='numeric'
+                    maxLength={11}
+                />
+                <Text style={styles.error}>{this.state.contactError}</Text>
+
+
+                {this.state.isConfirmed === 0 ? 
+                    <View style={styles.button}>
+                        <Button title="Verify" onPress={() => { this.submitVerify() }} />
+                    </View> 
+                    :
+                    <View style={styles.button}>
+                        <Button title="Update" onPress={() => { this.submit() }} />
+                    </View> 
+
+                }
+
+                {/* Delete button */}
                 <View style={styles.deleteBtn}>
                 <Button title="Delete" 
                         onPress={() => { this.delete() }} 
                         color="red"
                     />
                 </View>
+
+
+                {this.state.isConfirmed === 1 ?
+                    <View style={styles.buttonSubs}>
+                        <Button title="Subscribe" color="gold" onPress={() => { this.submitSubscribe() }} />
+                    </View>
+                    :
+                   null
+                }
             </View>
         );
     }

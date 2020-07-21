@@ -7,6 +7,8 @@ import { styles } from './src/styles/styles'
 import Read from './src/components/read-component';
 import Create from './src/components/create-component';
 import Edit from './src/components/edit-component';
+import Verify from './src/components/verifySMS-component';
+import Subscribe from './src/components/subscribe-component';
 
 import API from './src/components/api-component';
 
@@ -57,6 +59,8 @@ export default class App extends Component{
                         }}/>
         <Stack.Screen name="CreateRoute" component={Create} />
         <Stack.Screen name="EditRoute" component={Edit} />
+        <Stack.Screen name="VerifyRoute" component={Verify} />
+        <Stack.Screen name="SubscribeRoute" component={Subscribe} />
         </Stack.Navigator>
     )
 

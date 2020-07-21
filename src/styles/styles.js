@@ -55,10 +55,18 @@ export const styles = StyleSheet.create({
     error:{
         color:'red',
         marginLeft: 80,
-        marginBottom: 30,
+        marginBottom: 10,
     },
     button:{
         backgroundColor: 'blue',
+        marginTop: 10,
+        marginRight: 80,
+        marginLeft: 80,
+        borderRadius: 50,
+        overflow: 'hidden'
+    },
+    buttonSubs: {
+        backgroundColor: 'orange',
         marginTop: 10,
         marginRight: 80,
         marginLeft: 80,
